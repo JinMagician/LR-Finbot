@@ -69,6 +69,12 @@ footer{color:var(--muted);font-size:.85rem;padding:40px 0;border-top:1px solid v
 figcaption.cap{font-size:.92rem;margin:28px 0 10px;max-width:78ch}
 figcaption.cap b{font-weight:700}
 figure{margin:0}
+a.cite{color:var(--accent);text-decoration:none}
+a.cite:hover{text-decoration:underline}
+.refs{max-width:78ch;padding-left:0;list-style:none;margin:0}
+.refs li{margin:0 0 12px;padding-left:24px;text-indent:-24px}
+.refs a{color:var(--accent);word-break:break-all}
+.refs li:target{background:var(--accent-soft);border-radius:6px}
 figure.fig{margin:0 0 28px}
 .figbox{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;justify-content:center}
 .figbox img{display:block;width:100%;max-width:640px;height:auto}
@@ -89,6 +95,7 @@ figcaption.figcap{font-size:.92rem;margin:10px 0 0;text-align:center}
   <a href="#tuning">Hyperparameter tuning</a>
   <a href="#topics">BERTopic topics</a>
   <a href="#prompts">Classification prompts</a>
+  <a href="#references">References</a>
 </div></nav>
 
 <main class="wrap">
@@ -96,9 +103,9 @@ figcaption.figcap{font-size:.92rem;margin:10px 0 0;text-align:center}
 <section id="tuning">
   <h2>BERTopic hyperparameter tuning</h2>
   <div class="prose">
-    <p>To evaluate the performance of BERTopic models, we use topic quality (TQ), based on two established metrics, namely topic coherence (TC) and topic diversity (TD) (Dieng et al., 2020). Specifically, topic coherence is measured using normalized pointwise mutual information (NPMI) (Lau et al., 2014), defined as</p>
+    <p>To evaluate the performance of BERTopic models, we use topic quality (TQ), based on two established metrics, namely topic coherence (TC) and topic diversity (TD) (<a class="cite" href="#ref-dieng2020">Dieng et al., 2020</a>). Specifically, topic coherence is measured using normalized pointwise mutual information (NPMI) (<a class="cite" href="#ref-lau2014">Lau et al., 2014</a>), defined as</p>
     <div class="math">$$\text{Topic Coherence} = \frac{1}{|T|} \sum_{t \in T} \frac{2}{N(N-1)} \sum_{i&lt;j} \frac{\log \frac{P(w_i, w_j)}{P(w_i)P(w_j)}}{-\log P(w_i, w_j)}$$</div>
-    <p>where \(T\) denotes the set of topics, \(N\) is the number of top words per topic, and \(P(w_i, w_j)\) and \(P(w_i)\) are the joint and marginal probabilities estimated from a reference corpus. Topic diversity (Dieng et al., 2020) is defined as</p>
+    <p>where \(T\) denotes the set of topics, \(N\) is the number of top words per topic, and \(P(w_i, w_j)\) and \(P(w_i)\) are the joint and marginal probabilities estimated from a reference corpus. Topic diversity (<a class="cite" href="#ref-dieng2020">Dieng et al., 2020</a>) is defined as</p>
     <div class="math">$$\text{Topic Diversity} = \frac{\left|\bigcup_{t \in T} W_t\right|}{|T| \times N},$$</div>
     <p>where \(W_t\) represents the set of top-\(N\) words for topic \(t\). The overall topic quality is computed as the product of coherence and diversity, i.e.,</p>
     <div class="math">$$\text{Topic Quality} = \text{Topic Coherence} \times \text{Topic Diversity}$$</div>
@@ -156,6 +163,14 @@ figcaption.figcap{font-size:.92rem;margin:10px 0 0;text-align:center}
     <p>Taxonomy:</p>
     <div class="tax" id="taxonomy"></div>
   </div>
+</section>
+
+<section id="references">
+  <h2>References</h2>
+  <ul class="refs">
+    <li id="ref-dieng2020">Adji B. Dieng, Francisco J. R. Ruiz, and David M. Blei. 2020. Topic modeling in embedding spaces. <i>Transactions of the Association for Computational Linguistics</i>, 8:439–453.</li>
+    <li id="ref-lau2014">Jey Han Lau, David Newman, and Timothy Baldwin. 2014. Machine reading tea leaves: Automatically evaluating topic coherence and topic model quality. In <i>Conference of the European Chapter of the Association for Computational Linguistics</i>.</li>
+  </ul>
 </section>
 
 </main>
