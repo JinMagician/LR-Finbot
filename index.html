@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supplementary Material</title>
+<meta name="description" content="Supplementary material: BERTopic hyperparameter tuning, topic list, and LLM classification prompts for the option pricing literature study.">
+<style>
+:root{
+  --bg:#fbfaf7; --surface:#ffffff; --text:#1d1f23; --muted:#5f6670; --line:#e3e1db;
+  --accent:#1f5f8b; --accent-soft:#e6f0f7; --best:#fff4d6; --best-text:#7a5300;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171a; --surface:#1d2024; --text:#e7e7e4; --muted:#9aa1aa; --line:#2f333a;
+    --accent:#7db7e0; --accent-soft:#1f2c37; --best:#3a3018; --best-text:#f2d38a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171a; --surface:#1d2024; --text:#e7e7e4; --muted:#9aa1aa; --line:#2f333a;
+  --accent:#7db7e0; --accent-soft:#1f2c37; --best:#3a3018; --best-text:#f2d38a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{border-bottom:1px solid var(--line);background:var(--surface)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header .wrap{padding-top:40px;padding-bottom:28px}
+h1{margin:0 0 6px;font-size:clamp(1.5rem,3.5vw,2.1rem);line-height:1.25}
+.sub{color:var(--muted);margin:0}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+nav a{white-space:nowrap;text-decoration:none;color:var(--text);padding:6px 12px;border-radius:999px;font-size:.92rem}
+nav a:hover{background:var(--accent-soft);color:var(--accent)}
+section{padding:40px 0 8px}
+h2{font-size:1.4rem;margin:0 0 6px}
+h3{font-size:1.1rem;margin:28px 0 8px}
+.lead{color:var(--muted);margin:0 0 18px;max-width:75ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:var(--surface);font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
+th .arr{color:var(--muted);font-size:.75rem;margin-left:4px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.best td{background:var(--best);color:var(--best-text);font-weight:600}
+td b{font-weight:700}
+tbody tr:hover td{background:var(--accent-soft)}
+tr.best:hover td{background:var(--best)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+input[type=search]{flex:1 1 240px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font-size:.95rem}
+.count{color:var(--muted);font-size:.9rem}
+.legend{font-size:.85rem;color:var(--muted);margin-top:10px}
+.legend code{background:var(--accent-soft);padding:1px 5px;border-radius:4px;color:var(--text)}
+.kw{color:var(--muted)}
+.prompt{padding:18px 20px;margin-bottom:18px}
+.prompt p{margin:0 0 10px}
+.prompt ul,.prompt ol{margin:0;padding-left:22px}
+.prompt li{margin:3px 0}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;background:var(--accent-soft);padding:2px 6px;border-radius:4px}
+.tax{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tax div{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.tax strong{display:block;margin-bottom:4px}
+.tax span{display:block;font-size:.9rem;color:var(--muted)}
+footer{color:var(--muted);font-size:.85rem;padding:40px 0;border-top:1px solid var(--line);margin-top:40px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Supplementary Material</h1>
+  <p class="sub">Topic modelling and LLM-based classification of the option pricing literature</p>
+</div></header>
+
+<nav><div class="wrap">
+  <a href="#tuning">Hyperparameter tuning</a>
+  <a href="#topics">BERTopic topics</a>
+  <a href="#prompts">Classification prompts</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="tuning">
+  <h2>BERTopic hyperparameter tuning</h2>
+  <p class="lead">Results of 24 random search trials for BERTopic hyperparameter tuning. The optimal configuration (Trial 8, highlighted) achieves the best overall performance. Click a column header to sort.</p>
+  <div class="card tablebox"><table id="tuneTable"></table></div>
+  <p class="legend"><code>n_nb</code> UMAP n_neighbors · <code>n_comp</code> UMAP n_components · <code>min_clust</code> HDBSCAN min_cluster_size · <code>min_samp</code> HDBSCAN min_samples · <code>TC</code> topic coherence · <code>TD</code> topic diversity · <code>TQ</code> topic quality. Bold marks the best value in each metric column.</p>
+</section>
+
+<section id="topics">
+  <h2>Topics identified by the champion BERTopic model</h2>
+  <p class="lead">Topics with their keyword representations and GPT-4.1-generated descriptions. Topic −1 collects outlier documents.</p>
+  <div class="toolbar">
+    <input type="search" id="topicSearch" placeholder="Search keywords or descriptions…" aria-label="Search topics">
+    <span class="count" id="topicCount"></span>
+  </div>
+  <div class="card tablebox"><table id="topicTable"></table></div>
+</section>
+
+<section id="prompts">
+  <h2>Prompts for classification</h2>
+  <p class="lead">The prompts used for LLM-based classification of abstracts.</p>
+
+  <h3>Option pricing model classification</h3>
+  <div class="card prompt">
+    <p>Please clarify whether the abstract discusses developing or comparing pricing models or volatility models. I need a response that uses only the options listed below: <span class="mono">[Yes, No]</span>. What is your answer? Your answer should consist solely of the item from the list and nothing else. Your answer should also follow the constraints below:</p>
+    <ul id="constraints"></ul>
+  </div>
+
+  <h3>Option underlying types classification</h3>
+  <div class="card prompt">
+    <p>Task: Classify Underlying Asset Type. Classify the underlying asset type of options mentioned in the abstract. We have six questions for you to answer. For each question, please respond with only 'yes' or 'no' and nothing else.</p>
+    <ul>
+      <li><b>Q1:</b> Does this abstract specify Stocks as underlying assets?</li>
+      <li><b>Q2:</b> Does this abstract specify Indexes as underlying assets?</li>
+      <li><b>Q3:</b> Does this abstract specify Commodities as underlying assets?</li>
+      <li><b>Q4:</b> Does this abstract specify Currencies as underlying assets?</li>
+      <li><b>Q5:</b> Does this abstract specify Interest Rates as underlying assets?</li>
+      <li><b>Q6:</b> Does this abstract specify Cryptocurrencies as underlying assets?</li>
+    </ul>
+    <p style="margin-top:10px">Please merge your responses to the final output as the following format <span class="mono">{Stocks: your response for Q1, Indexes: your response for Q2, Commodities: your response for Q3, Currencies: your response for Q4, Interest Rates: your response for Q5, Cryptocurrencies: your response for Q6}</span>.</p>
+  </div>
+
+  <h3>Pricing model types classification</h3>
+  <div class="card prompt">
+    <p><b>Class-level task:</b> Classify this abstract of an academic paper into the option pricing methodology taxonomy. Please only assign up to all applicable class from the taxonomy. Use the exact subclass index 1-8 provided below and give me just a list in form of <span class="mono">[class_index; class_index]</span>.</p>
+    <p><b>Subclass-level task:</b> Classify this abstract of an academic paper into the option pricing methodology taxonomy. Please only assign up to all applicable subclass from the taxonomy. Use the exact subclass index [1.1, ..., 8.3] provided below and give me just a list in form of <span class="mono">[subclass_index; subclass_index]</span>.</p>
+    <p>Taxonomy:</p>
+    <div class="tax" id="taxonomy"></div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap">Supplementary material · Last updated October 2026</div></footer>
+
+<script>
+// ---------- Hyperparameter tuning ----------
+const tuneCols = [
+  {k:"trial",l:"Trial"},{k:"topics",l:"#Topics"},{k:"nnb",l:"n_nb"},{k:"ncomp",l:"n_comp"},
+  {k:"mclust",l:"min_clust"},{k:"msamp",l:"min_samp"},{k:"tc",l:"TC",d:4},{k:"td",l:"TD",d:4},{k:"tq",l:"TQ",d:4}
+];
+const tuneRaw = [
+ [0,97,15,5,15,10,0.0571,0.6505,0.0371],[1,172,15,10,10,5,0.0054,0.6669,0.0036],
+ [2,45,30,10,40,10,0.1230,0.6978,0.0859],[3,103,30,8,10,10,0.1320,0.7068,0.0933],
+ [4,73,50,8,15,15,0.0742,0.6658,0.0494],[5,48,100,5,20,15,0.1198,0.7125,0.0853],
+ [6,50,15,8,40,15,0.1258,0.6620,0.0833],[7,119,30,10,10,10,0.0256,0.6555,0.0168],
+ [8,55,30,5,20,20,0.1384,0.7200,0.0997],[9,74,30,8,15,15,0.0765,0.6676,0.0510],
+ [10,69,30,10,15,20,0.1274,0.7232,0.0921],[11,103,30,10,10,10,0.1254,0.7068,0.0886],
+ [12,64,100,8,15,15,0.1190,0.7328,0.0872],[13,7,100,10,15,15,0.0768,0.7714,0.0592],
+ [14,5,50,10,40,20,0.0548,0.8200,0.0449],[15,145,30,10,10,5,0.0172,0.6669,0.0115],
+ [16,40,30,10,40,5,0.1350,0.6725,0.0908],[17,34,100,10,40,5,0.0992,0.6412,0.0636],
+ [18,6,50,10,10,15,0.0769,0.7833,0.0602],[19,33,100,5,40,10,0.0887,0.6606,0.0586],
+ [20,67,50,10,15,15,0.0777,0.6552,0.0509],[21,80,50,8,10,15,0.0673,0.6575,0.0442],
+ [22,88,15,5,10,20,0.0540,0.6705,0.0362],[23,39,30,10,40,10,0.1231,0.7179,0.0884]
+];
+const tuneRows = tuneRaw.map(r => Object.fromEntries(tuneCols.map((c,i)=>[c.k,r[i]])));
+const bestOf = {tc:Math.max(...tuneRows.map(r=>r.tc)), td:Math.max(...tuneRows.map(r=>r.td)), tq:Math.max(...tuneRows.map(r=>r.tq))};
+let tuneSort = {k:"trial",asc:true};
+
+function renderTune(){
+  const t = document.getElementById("tuneTable");
+  const rows = [...tuneRows].sort((a,b)=>(a[tuneSort.k]-b[tuneSort.k])*(tuneSort.asc?1:-1));
+  t.innerHTML = "<thead><tr>" + tuneCols.map(c =>
+    `<th class="num" data-k="${c.k}">${c.l}<span class="arr">${tuneSort.k===c.k?(tuneSort.asc?"▲":"▼"):""}</span></th>`).join("") +
+    "</tr></thead><tbody>" + rows.map(r =>
+    `<tr class="${r.trial===8?"best":""}">` + tuneCols.map(c=>{
+      const v = c.d ? r[c.k].toFixed(c.d) : r[c.k];
+      return `<td class="num">${bestOf[c.k]===r[c.k] ? "<b>"+v+"</b>" : v}</td>`;
+    }).join("") + "</tr>").join("") + "</tbody>";
+  t.querySelectorAll("th").forEach(th => th.onclick = () => {
+    const k = th.dataset.k;
+    tuneSort = {k, asc: tuneSort.k===k ? !tuneSort.asc : true};
+    renderTune();
+  });
+}
+renderTune();
+
+// ---------- Topics ----------
+const topics = [
+ [-1,"option, volatility, pricing, model, options, price, prices, risk, market, option pricing","(Outliers) Option Pricing under Stochastic Volatility",5298],
+ [0,"stock, compensation, stock options, firms, executive, ceo, stock option, firm, employee, incentives","Executive Stock Option Compensation",1408],
+ [1,"neural, learning, network, neural network, networks, deep, neural networks, model, data, pricing","Neural Networks in Option Pricing",551],
+ [2,"real, project, investment, value, projects, real options, decision, option, carbon, real option","Real Options in Project Investment",504],
+ [3,"method, finite, numerical, scheme, order, american, difference, finite difference, differential, methods","High-Order Numerical Schemes for Options",436],
+ [4,"returns, market, implied, stock, trading, options, volatility, index, implied volatility, information","Informed Options Trading Predictability",341],
+ [5,"oil, volatility, market, implied, implied volatility, markets, indices, uncertainty, returns, index","Crude Oil Implied Volatility Dynamics",329],
+ [6,"fractional, fractional brownian, brownian, rough, motion, brownian motion, hurst, model, volatility, stochastic","Fractional Brownian Motion Option Pricing",224],
+ [7,"barrier, barrier options, barrier option, double, double barrier, options, barriers, option, pricing, monitored","Double Barrier Option Pricing Models",210],
+ [8,"parallel, gpu, computing, implementation, performance, cpu, architecture, hardware, pricing, monte carlo","GPU-Accelerated Option Pricing Algorithms",194],
+ [9,"jump, jumps, regime, switching, regime switching, model, stochastic, markov, diffusion, volatility","Regime-Switching Jump Diffusion Pricing",182],
+ [10,"tree, lattice, binomial, trinomial, binomial tree, pricing, trees, model, option, convergence","Binomial Tree Option Pricing Methods",181],
+ [11,"volatility, forecasting, implied, implied volatility, forecasts, realized, forecast, index, realized volatility, volatility forecasting","Implied Volatility in Forecasting",180],
+ [12,"fractional, time fractional, fractional black, black, method, order, time, numerical, fractional derivative, black scholes","Time-Fractional Black-Scholes Methods",155],
+ [13,"fuzzy, numbers, option, pricing, option pricing, model, price, fuzzy set, european, pricing model","Fuzzy Option Pricing Models",121],
+ [14,"credit, default, spreads, cds, credit default, credit risk, risk, credit spreads, debt, default risk","Credit Derivatives Valuation and Volatility",120],
+ [15,"hedging, problem, transaction costs, transaction, martingale, superhedging, costs, optimal, super, duality","Hedging Options with Transaction Costs",119],
+ [16,"rate, bond, rates, term structure, term, model, structure, short rate, factor, stochastic","Term Structure of Interest Rates",108],
+ [17,"clinical, health, received, research, patients, dr, fees, study, medical, pharmaceuticals","Medical Research Funding Disclosures",108],
+ [18,"perpetual, american, stopping, optimal, perpetual american, exercise, optimal stopping, american options, american option, boundary","Perpetual American Option Stopping",103],
+ [19,"futures, commodity, prices, convenience, futures prices, futures price, convenience yield, price, oil, model","Commodity Futures Pricing Models",95],
+ [20,"density, risk neutral, neutral, densities, neutral density, estimation, nonparametric, neutral densities, risk, option prices","Nonparametric Risk-Neutral Density Estimation",92],
+ [21,"monte, monte carlo, carlo, quasi monte, reduction, variance, qmc, quasi, variance reduction, method","Monte Carlo Methods in Finance",91],
+ [22,"garch, garch models, garch model, models, garch option, model, option pricing, pricing, option, innovations","GARCH Models in Option Pricing",85],
+ [23,"currency, foreign, exchange, exchange rate, currency options, foreign exchange, fx, rate, currency option, rates","Foreign Currency Option Pricing Models",83],
+ [24,"inverse, inverse problem, regularization, problem, local, local volatility, volatility, volatility function, ill, tikhonov","Local Volatility Surface Calibration",82],
+ [25,"implied volatility, asymptotics, asymptotic, volatility, implied, small, sabr, maturity, large, expansion","Small-Time Implied Volatility Asymptotics",78],
+ [26,"radial, radial basis, rbf, basis, basis function, basis functions, method, functions, function, numerical","Radial Basis Functions for Option Pricing",78],
+ [27,"uncertain, stock model, pricing formulas, formulas, lookback, uncertain stock, pricing, stock, uncertain financial, option","Uncertain Models for Option Pricing",77],
+ [28,"insurance, life insurance, life, mortality, guaranteed, linked, death, contracts, insurance contracts, guarantees","Life Insurance Valuation and Risk",72],
+ [29,"monte carlo, monte, carlo, american, squares, american options, squares monte, regression, method, simulation","Monte Carlo American Option Pricing",71],
+ [30,"vulnerable, default, counterparty, vulnerable options, credit, risk, default risk, credit risk, pricing vulnerable, options","Vulnerable Options and Credit Risk",65],
+ [31,"asian, asian options, asian option, geometric, arithmetic, average, geometric asian, options, price, arithmetic asian","Asian Options Pricing Models",58],
+ [32,"american, boundary, exercise, american options, exercise boundary, american option, optimal exercise, approximation, early, early exercise","American Put Option Exercise Boundary",58],
+ [33,"processes, stochastic, black scholes, scholes, martingale, black, process, vy, equation, option pricing","Stochastic Processes in Option Pricing",56],
+ [34,"distribution, kurtosis, log, distributions, gamma, model, density, pricing, motion, option pricing","Variance Gamma Option Pricing",49],
+ [35,"bank, deposit, banks, deposit insurance, capital, insurance, risk, loan, government, loans","Deposit Insurance and Capital Regulation",48],
+ [36,"supply, supply chain, chain, retailer, contract, option contract, supplier, demand, financing, procurement","Supply Chain Option Contracts",41],
+ [37,"wavelet, wavelets, method, wavelet based, discretization, legendre, fractional, equations, matrices, scheme","Wavelet Methods for Option Pricing",39],
+ [38,"stochastic, stochastic volatility, volatility, heston, volatility model, heston model, model, expansion, multiscale, approximation","Multiscale Stochastic Volatility Option Pricing",38],
+ [39,"mortgage, prepayment, mortgages, loan, house, value, rate, borrower, house price, mortgage backed","Mortgage Default and Option Pricing",38],
+ [40,"barrier, monte carlo, monte, carlo, barrier options, simulation, algorithm, pricing barrier, options, method","Efficient Monte Carlo Barrier Option Pricing",38],
+ [41,"basket, basket options, approximation, basket option, pricing basket, log, moment matching, matching, closed, closed form","Closed-Form Basket Option Pricing",31],
+ [42,"warrants, warrant, stock, pricing, warrant prices, structured, market, warrant pricing, stocks, issued","Warrant Pricing and Valuation Models",31],
+ [43,"quantum, amplitude, algorithms, algorithm, computing, circuit, monte carlo, monte, carlo, classical","Quantum Algorithms for Option Pricing",30],
+ [44,"fourier, cos, cos method, method, cosine, fourier cosine, fourier transform, transform, fast, cosine series","Fourier-Cosine Option Pricing Methods",28],
+ [45,"static, hedging, static hedging, hedge, barrier, hedges, barrier options, static hedges, options, portfolio","Static Hedging of Barrier Options",28],
+ [46,"bounds, upper, good deal, lower, prices, bound, bounds option, deal, upper bounds, lower bounds","Option Pricing Bounds in Incomplete Markets",28],
+ [47,"weather, temperature, rainfall, weather derivatives, derivatives, temperatures, cooling, daily, process, degree","Temperature Derivatives in Agriculture/Energy",26],
+ [48,"implied volatility, implied, volatility, formula, black, black scholes, scholes, approximation, method, scholes formula","Implied Volatility Approximation Methods",25],
+ [49,"lie, symmetry, symmetries, equation, group, invariant, classification, solutions, symmetry analysis, black","Lie Symmetry Analysis in Finance",25],
+ [50,"currency, volatility, iv, exchange, implied, usd, implied volatility, exchange rate, rate volatility, month","Currency Options Volatility Modeling",23],
+ [51,"reflected, bsdes, backward stochastic, stochastic differential, backward, reflected bsdes, stochastic, differential, uniqueness, solution","Reflected G-BSDEs and Applications",23],
+ [52,"wave, solutions, ivancevic, soliton, ivancevic option, nonlinear, pricing model, rogue, dark, option pricing","Ivancevic Option Pricing Waves",22],
+ [53,"copula, copulas, dependence, bivariate, spread, dynamic, spread option, gaussian, model, pricing","Dynamic Copula Bivariate Option Pricing",21],
+ [54,"volatility, implied, index, implied volatility, 500, models, model, stochastic, volatility function, data","Stochastic Volatility in Option Pricing",21]
+];
+const topicCols = [{l:"Topic",k:0,num:true},{l:"Topic keywords",k:1},{l:"GPT-4.1 description",k:2},{l:"Count",k:3,num:true}];
+let topicSort = {k:0,asc:true};
+const esc = s => String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function renderTopics(){
+  const q = document.getElementById("topicSearch").value.trim().toLowerCase();
+  let rows = topics.filter(r => !q || (r[1]+" "+r[2]).toLowerCase().includes(q));
+  rows.sort((a,b)=>{
+    const x=a[topicSort.k], y=b[topicSort.k];
+    return (typeof x==="number" ? x-y : x.localeCompare(y)) * (topicSort.asc?1:-1);
+  });
+  const t = document.getElementById("topicTable");
+  t.innerHTML = "<thead><tr>" + topicCols.map(c =>
+    `<th class="${c.num?"num":""}" data-k="${c.k}">${c.l}<span class="arr">${topicSort.k===c.k?(topicSort.asc?"▲":"▼"):""}</span></th>`).join("") +
+    "</tr></thead><tbody>" + rows.map(r =>
+    `<tr><td class="num">${r[0]}</td><td class="kw">${esc(r[1])}</td><td>${esc(r[2])}</td><td class="num">${r[3].toLocaleString()}</td></tr>`).join("") + "</tbody>";
+  t.querySelectorAll("th").forEach(th => th.onclick = () => {
+    const k = +th.dataset.k;
+    topicSort = {k, asc: topicSort.k===k ? !topicSort.asc : true};
+    renderTopics();
+  });
+  const total = rows.reduce((s,r)=>s+r[3],0);
+  document.getElementById("topicCount").textContent = `${rows.length} topics · ${total.toLocaleString()} documents`;
+}
+document.getElementById("topicSearch").addEventListener("input", renderTopics);
+renderTopics();
+
+// ---------- Prompt constraints ----------
+const constraints = [
+ "You should answer No if the abstract primarily focuses on the application of option pricing, rather than the development or comparison of option pricing models themselves.",
+ "You should answer Yes if the abstract focuses on methods of solving the existing option pricing or volatility model.",
+ "You should answer No if the abstract is about real estate investment or real option.",
+ "You should answer No if the abstract is purely about volatility and does not mention option pricing at all.",
+ "You should answer No if the abstract is purely about Greeks and risk management and does not mention option pricing at all.",
+ "You should answer No if the abstract is purely about hedging strategies and does not mention option pricing models at all.",
+ "You should answer No if the abstract describes an application of option pricing principles to a non traditional financial market.",
+ "You should answer No if the abstract is purely an empirical study testing the performance of existing, well-established option pricing models, without proposing any modifications or new solution methods.",
+ "You should answer No if the abstract focuses on market microstructure related to options, such as bid-ask spreads or trading volume, without discussing model development.",
+ "You should answer No if the abstract applies option pricing theory to model or predict bankruptcy or credit risk, without developing or comparing new option pricing models or solution methods.",
+ "You should answer No if the abstract primarily focuses on comparing or developing volatility models without a direct focus on option pricing models or their solution methods.",
+ "You should answer Yes if the abstract focuses on comparing different option pricing models, even if it involves an empirical study.",
+ "You should answer No if the provided text is a list of diverse paper topics from a proceedings or collection, rather than a single abstract focused on developing or comparing pricing/volatility models.",
+ "You should answer No if the abstract focuses on developing or comparing estimation methods for implied volatility surfaces, without directly developing or comparing option pricing models.",
+ "You should answer No if the abstract focuses on developing or analyzing numerical methods for solving PDE used in option pricing, without directly developing or comparing option pricing models.",
+ "You should answer No if the abstract applies option pricing theory to model or analyze insurance products, without developing or comparing new option pricing models or solution methods.",
+ "You should answer No if the abstract applies option pricing theory to model or analyze real options or investment opportunities, without developing or comparing new option pricing models or solution methods.",
+ "You should answer No if the abstract talks about cash-settled American-style options",
+ "You should answer No if the abstract talks about energy markets",
+ "You should answer No if the abstract talks about weather derivatives",
+ "You should answer No if the abstract talks about employee stock options",
+ "You should answer No if the abstract talks about vulnerable chained options",
+ "You should answer No if the abstract contains the phrase 'The proceedings contain'"
+];
+document.getElementById("constraints").innerHTML = constraints.map(c=>`<li>${esc(c)}</li>`).join("");
+
+// ---------- Taxonomy ----------
+const taxonomy = [
+ ["1","Analytical Models",["1.1 Black-Scholes Extensions","1.2 Stochastic Volatility Models","1.3 Jump/Discontinuity Models","1.4 Regime-Switching Models","1.5 Other Analytical Models"]],
+ ["2","Numerical Methods",["2.1 PDE/PIDE Solvers","2.2 Monte Carlo Simulation","2.3 Lattice/Tree Methods","2.4 Transform Methods","2.5 Other Numerical Methods"]],
+ ["3","Multi-Factor and Hybrid Models",["3.1 Stochastic interest rates/term structure of interest rates","3.2 Stochastic dividends","3.3 Multi-asset correlation","3.4 Hybrid local-stochastic volatility","3.5 Other Multi-Factor and Hybrid Models"]],
+ ["4","Market Imperfections and Frictions",["4.1 Transaction costs","4.2 Illiquidity/funding costs","4.3 Taxes/regulation","4.4 Other Market Imperfections"]],
+ ["5","Calibration and Model Estimation",["5.1 Implied volatility fitting","5.2 Density recovery","5.3 Statistical calibration","5.4 Other Calibration and Model Estimation"]],
+ ["6","Machine Learning and Data-Driven Approaches",["6.1 Neural PDE solvers/Deep learning for pricing prediction","6.2 Reinforcement Learning for optimal exercise","6.3 ML for calibration","6.4 Other Machine Learning and Data-Driven Approaches"]],
+ ["7","Behavioral and Alternative Paradigms",["7.1 Utility-based pricing","7.2 Behavioral biases","7.3 Ambiguity aversion","7.4 Other Behavioral and Alternative Paradigms"]],
+ ["8","Emerging and Niche Approaches or Others",["8.1 Quantum computing","8.2 ESG-adjusted models","8.3 Others (cannot find in the previous class)"]]
+];
+document.getElementById("taxonomy").innerHTML = taxonomy.map(([i,n,subs]) =>
+  `<div><strong>[${i}] ${esc(n)}</strong>${subs.map(s=>`<span>${esc(s)}</span>`).join("")}</div>`).join("");
+</script>
+</body>
+</html>
